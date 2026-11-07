@@ -11,6 +11,7 @@
   --color-primary-hover: #075985;
   --color-primary-light: #e0f2fe;
   --color-primary-dark: #0c4a6e;
+  --color-primary-contrast: #ffffff;
 
   /* Background */
   --bg-primary: #ffffff;
@@ -42,28 +43,29 @@
   --transition-slow: 350ms ease;
 }
 
-/* Dark Mode — only via html.dark class */
+/* Dark Mode — dark rose background & golden accent, only via html.dark class */
 html.dark {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
+  --bg-primary: #2b0d15;
+  --bg-secondary: #391821;
+  --bg-tertiary: #4d2d36;
 
-  --color-primary: #38bdf8;
-  --color-primary-hover: #7dd3fc;
+  --color-primary: #fbbf24;
+  --color-primary-hover: #fcd34d;
+  --color-primary-contrast: #2b0d15;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-tertiary: #94a3b8;
+  --text-primary: #fcf3f5;
+  --text-secondary: #e6c7cf;
+  --text-tertiary: #b6919b;
 
-  --border-color: #334155;
-  --border-color-hover: #475569;
+  --border-color: #4d2d36;
+  --border-color-hover: #65434c;
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 
-  --nav-bg: rgba(15, 23, 42, 0.8);
-  --nav-border: rgba(51, 65, 85, 0.8);
+  --nav-bg: rgba(43, 13, 21, 0.8);
+  --nav-border: rgba(77, 45, 54, 0.8);
 
 
 }

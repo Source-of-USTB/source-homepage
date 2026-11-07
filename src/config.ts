@@ -3,17 +3,17 @@
 
 export const siteConfig = {
   // Site title — displayed in nav, footer, and page titles
-  title: 'CapsuleX',
+  title: '索思科技协会',
 
   // Site description — used in meta tags and hero section
-  description: 'A minimal blog theme with capsule design',
+  description: '北京科技大学下属计算机社团',
 
   // Author name — used in footer and meta author tag
-  author: 'wangjacks',
+  author: 'SourceUSTB',
 
   // Site URL — set before deployment (e.g., https://example.com)
   // Used for RSS feed and SEO
-  site: 'https://capsule-x-brown.vercel.app',
+  site: 'https://github.com/Source-of-USTB',
 
   // HTML lang attribute — affects SEO and accessibility
   lang: 'en',
@@ -21,13 +21,14 @@ export const siteConfig = {
   // Navigation links — displayed in capsule nav bar
   nav: [
     { title: 'Home', href: '/' },
-    { title: 'About', href: '/about' },
-    { title: 'Tags', href: '/tags' },
+    { title: 'Blogs', href: '/blogs' },
+    { title: 'Gallery', href: '/gallery' },
+    { title: 'Members', href: '/members' },
   ],
 
   // Social links — leave empty to hide
   social: {
-    github: 'https://github.com/wangjacks/capsule-x',
+    github: 'https://github.com/Source-of-USTB',
   },
 
   // Feature toggles

@@ -30,6 +30,11 @@ code {
   border: 1px solid var(--border-color);
 }
 
+/* Dark mode: blend Shiki's inline background into the rose palette */
+html.dark .astro-code {
+  background-color: var(--bg-secondary) !important;
+}
+
 /* Light mode adjustments */
 html:not(.dark) pre .line.diff.added {
   background: rgba(34, 197, 94, 0.15);
