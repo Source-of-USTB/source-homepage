@@ -54,7 +54,7 @@ const pageLead = 'Joined members and their blog sites & RSS feeds';
   }
 
   .page-header {
-    padding: 2rem 0 2rem;
+    padding: 2rem 0;
   }
 
   .page-header h1 {
@@ -91,15 +91,15 @@ const pageLead = 'Joined members and their blog sites & RSS feeds';
     gap: 1rem;
     min-width: 0;
     padding: 1.25rem 1.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: var(--planet-info-bg);
+    border: 1px solid var(--planet-info-border);
     border-radius: 16px;
     transition: border-color var(--transition-fast), background var(--transition-fast);
   }
 
   .member-card:hover {
     border-color: var(--color-primary);
-    background: var(--bg-tertiary);
+    background: var(--planet-info-bg-hover);
   }
 
   .member-card__avatar {
@@ -142,11 +142,10 @@ const pageLead = 'Joined members and their blog sites & RSS feeds';
   }
 
   .member-card__links a {
-    color: var(--color-primary);
+    color: var(--color-primary-hover);
   }
 
   .member-card__links a:hover {
-    color: var(--color-primary-hover);
     text-decoration: underline;
   }
 

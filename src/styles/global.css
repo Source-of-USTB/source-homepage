@@ -6,11 +6,11 @@
 
 /* CSS Variables — Light Mode (default) */
 :root {
-  /* Sky Blue Accent */
-  --color-primary: #0369a1;
-  --color-primary-hover: #075985;
-  --color-primary-light: #e0f2fe;
-  --color-primary-dark: #0c4a6e;
+  /* Palette accent — 錆納戸 / 水色 */
+  --color-primary: #2c7d9b;
+  --color-primary-hover: #1f5f78;
+  --color-primary-light: #b9d8e4;
+  --color-primary-dark: #1f5f78;
   --color-primary-contrast: #ffffff;
 
   /* Background */
@@ -25,6 +25,11 @@
 
   /* Home intro — muted rose, readable on the light background */
   --home-intro-color: #943851;
+
+  /* Info cards on the Blogs and Members pages */
+  --planet-info-bg: #cee1e8;
+  --planet-info-bg-hover: #dcecf2;
+  --planet-info-border: #a8cfdd;
 
   /* Border */
   --border-color: #e2e8f0;
@@ -62,6 +67,11 @@ html.dark {
 
   /* Home intro — same hue as the background, lighter and less saturated */
   --home-intro-color: #c5778c;
+
+  /* Info cards on the Blogs and Members pages */
+  --planet-info-bg: var(--bg-secondary);
+  --planet-info-bg-hover: var(--bg-tertiary);
+  --planet-info-border: var(--border-color);
 
   --border-color: #4d2d36;
   --border-color-hover: #65434c;

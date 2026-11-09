@@ -79,7 +79,7 @@ const items = posts.map(post => ({
   }
 
   .page-header {
-    padding: 2rem 0 2rem;
+    padding: 2rem 0;
   }
 
   .page-header h1 {
@@ -113,15 +113,15 @@ const items = posts.map(post => ({
     align-items: flex-start;
     gap: 1rem;
     padding: 1.25rem 1.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: var(--planet-info-bg);
+    border: 1px solid var(--planet-info-border);
     border-radius: 16px;
     transition: border-color var(--transition-fast), background var(--transition-fast);
   }
 
   .post-card:hover {
     border-color: var(--color-primary);
-    background: var(--bg-tertiary);
+    background: var(--planet-info-bg-hover);
   }
 
   .post-card__avatar {
@@ -152,14 +152,14 @@ const items = posts.map(post => ({
   }
 
   .post-card__title a:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-hover);
   }
 
   .post-card__meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    color: var(--text-tertiary);
+    color: var(--text-secondary);
     font-size: 0.8125rem;
   }
 
@@ -179,13 +179,13 @@ const items = posts.map(post => ({
   }
 
   .post-card__description :global(a) {
-    color: var(--color-primary);
+    color: var(--color-primary-hover);
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
   .post-card__description :global(a:hover) {
-    color: var(--color-primary-hover);
+    text-decoration-thickness: 2px;
   }
 
   @media (max-width: 520px) {
