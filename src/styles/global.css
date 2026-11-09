@@ -23,6 +23,9 @@
   --text-secondary: #475569;
   --text-tertiary: #5a6b7d;
 
+  /* Home intro — muted rose, readable on the light background */
+  --home-intro-color: #943851;
+
   /* Border */
   --border-color: #e2e8f0;
   --border-color-hover: #cbd5e1;
@@ -56,6 +59,9 @@ html.dark {
   --text-primary: #fcf3f5;
   --text-secondary: #e6c7cf;
   --text-tertiary: #b6919b;
+
+  /* Home intro — same hue as the background, lighter and less saturated */
+  --home-intro-color: #c5778c;
 
   --border-color: #4d2d36;
   --border-color-hover: #65434c;

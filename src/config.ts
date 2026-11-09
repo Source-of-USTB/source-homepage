@@ -5,8 +5,8 @@ export const siteConfig = {
   // Site title — displayed in nav, footer, and page titles
   title: '索思科技协会',
 
-  // Site description — used in meta tags and hero section
-  description: '北京科技大学下属计算机社团',
+  // Site description — used in meta tags and RSS feed
+  description: '索思科技协会成立于1991年，是北京科技大学历史最悠久、影响力深远的学术科技类社团之一。',
 
   // Author name — used in footer and meta author tag
   author: 'SourceUSTB',
@@ -16,7 +16,7 @@ export const siteConfig = {
   site: 'https://github.com/Source-of-USTB',
 
   // HTML lang attribute — affects SEO and accessibility
-  lang: 'en',
+  lang: 'zh-CN',
 
   // Navigation links — displayed in capsule nav bar
   nav: [
@@ -38,7 +38,6 @@ export const siteConfig = {
     callout: true,          // Show callout components in blog posts
     lightbox: true,         // Enable image lightbox on click
     rss: true,              // Enable RSS feed
-    search: true,           // Enable client-side search (Fuse.js)
   },
 };
 

@@ -27,6 +27,9 @@ function transformerTitle() {
 // https://astro.build/config
 export default defineConfig({
   site: siteConfig.site || undefined,
+  devToolbar: {
+    enabled: false,
+  },
   integrations: [mdx()],
   markdown: {
     remarkPlugins: [remarkAlert],

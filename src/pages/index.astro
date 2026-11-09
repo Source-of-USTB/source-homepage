@@ -2,62 +2,59 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
-import { getCollection } from 'astro:content';
 import { siteConfig } from '../config';
-import { estimateReadingTime } from '../utils/readingTime';
 
-const posts = (await getCollection('blog'))
-  .filter(post => !post.data.draft)
-  .sort((a, b) => {
-    // Pinned posts first
-    if (a.data.pinned && !b.data.pinned) return -1;
-    if (!a.data.pinned && b.data.pinned) return 1;
-    // Then by date
-    return b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
-  });
+const socialLinks = [
+  {
+    label: 'Bilibili',
+    href: 'https://space.bilibili.com/3632313615256374',
+    icon: 'bilibili',
+  },
+  {
+    label: '微信公众号',
+    href: 'https://mp.weixin.qq.com/s/JEQ_mOdutMnV17chkp6JZQ',
+    icon: 'wechat',
+  },
+  {
+    label: 'QQ 群',
+    href: 'https://qm.qq.com/q/bhJtg9qyCA',
+    icon: 'qq',
+  },
+];
 ---
 
-<BaseLayout title={siteConfig.title + ' - Home'}>
+<BaseLayout title={siteConfig.title}>
   <Navigation />
 
-  <main class="container" style="padding-top: 6rem;">
+  <main class="container home">
     <section class="hero">
       <h1>{siteConfig.title}</h1>
-      <p class="hero-description">
-        {siteConfig.description}
+      <p class="hero-slogan">全心求索，同道而思</p>
+      <p class="hero-intro">
+        索思科技协会成立于1991年，历经三十余载沉淀，已成长为北科历史最悠久、影响力最为深远的学术科技类社团之一。
       </p>
-    </section>
 
-    <section class="posts" transition:name="posts">
-      <h2>Recent Posts</h2>
-      {posts.length === 0 ? (
-        <p class="placeholder">No posts yet. Create your first post in <code>src/content/blog/</code></p>
-      ) : (
-        <div class="posts-list">
-          {posts.map((post, i) => {
-            const readingTime = estimateReadingTime(post.body || '');
-            return (
-              <article class={`post-item ${post.data.pinned ? 'pinned' : ''}`} style={`--fade-delay: ${i * 0.1}s`}>
-                <div class="post-meta">
-                  {post.data.pinned && <span class="pin-badge">Pinned</span>}
-                  <time>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-                  <span class="meta-sep">·</span>
-                  <span class="reading-time">{readingTime} min read</span>
-                </div>
-                <h3><a href={`/${post.id}`}>{post.data.title}</a></h3>
-                <p>{post.data.description}</p>
-                {post.data.tags.length > 0 && (
-                  <div class="post-tags">
-                    {post.data.tags.map(tag => (
-                      <a href={`/tags/${tag}`} class="post-tag">#{tag}</a>
-                    ))}
-                  </div>
-                )}
-              </article>
-            );
-          })}
-        </div>
-      )}
+      <div class="hero-social" aria-label="社交媒体">
+        {socialLinks.map(link => (
+          <a class="hero-social-link" href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.label}>
+            <svg class="hero-social-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              {link.icon === 'bilibili' && (
+                <>
+                  <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+                  <polyline points="17 2 12 7 7 2" />
+                </>
+              )}
+              {link.icon === 'wechat' && (
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              )}
+              {link.icon === 'qq' && (
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              )}
+            </svg>
+            <span>{link.label}</span>
+          </a>
+        ))}
+      </div>
     </section>
   </main>
 
@@ -65,159 +62,65 @@ const posts = (await getCollection('blog'))
 </BaseLayout>
 
 <style>
+  .home {
+    padding-top: 6rem;
+  }
+
   .hero {
+    padding: 2.5rem 0 1rem;
     text-align: center;
-    padding: 3rem 0;
   }
 
   .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    margin-bottom: 1.25rem;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .hero-description {
-    font-size: 1.25rem;
-    color: var(--text-secondary);
-    max-width: 500px;
+  .hero-slogan {
+    color: var(--home-intro-color);
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+  }
+
+  .hero-intro {
+    color: var(--home-intro-color);
+    font-size: 1rem;
+    line-height: 1.9;
+    max-width: 640px;
     margin: 0 auto;
   }
 
-  .posts {
-    padding: 2rem 0;
-  }
-
-  .posts h2 {
-    margin-bottom: 1.5rem;
-  }
-
-  .placeholder {
-    color: var(--text-tertiary);
-    text-align: center;
-    padding: 3rem;
-    background: var(--bg-secondary);
-    border-radius: 12px;
-    border: 1px dashed var(--border-color);
-  }
-
-  .posts-list {
+  .hero-social {
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.4rem 1.5rem;
+    max-width: 640px;
+    margin: 1.5rem auto 0;
+    text-align: left;
   }
 
-  .post-item {
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .post-item.animate {
-    animation: fadeInUp 0.4s ease var(--fade-delay, 0s) both;
-  }
-
-  .post-item:last-child {
-    border-bottom: none;
-  }
-
-  .post-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  .post-meta time,
-  .reading-time {
-    color: var(--text-tertiary);
-  }
-
-  .meta-sep {
-    color: var(--border-color-hover);
-  }
-
-  .reading-time {
-    white-space: nowrap;
-  }
-
-  .post-item h3 {
-    margin: 0.5rem 0;
-  }
-
-  .post-item h3 a {
-    color: var(--text-primary);
-  }
-
-  .post-item h3 a:hover {
-    color: var(--color-primary);
-  }
-
-  .post-item p {
-    color: var(--text-secondary);
-    margin: 0;
-  }
-
-  .post-tags {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .post-tag {
-    color: var(--color-primary);
-    font-size: 0.875rem;
-  }
-
-  .post-tag:hover {
-    text-decoration: underline;
-  }
-
-  .post-item.pinned {
-    padding: 1rem;
-    background: var(--bg-secondary);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    margin-bottom: 0.5rem;
-  }
-
-  .pin-badge {
+  .hero-social-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.125rem 0.5rem;
-    background: var(--color-primary);
-    color: var(--color-primary-contrast);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    border-radius: 9999px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    gap: 0.375rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color var(--transition-fast);
   }
 
-  .pin-badge::before {
-    content: '📌';
-    font-size: 0.625rem;
+  .hero-social-link:hover {
+    color: var(--color-primary);
+  }
+
+  .hero-social-icon {
+    flex-shrink: 0;
   }
 </style>
-
-<script>
-  function initHomePage() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: '0px 0px -60px 0px', threshold: 0 }
-    );
-
-    document.querySelectorAll('.post-item').forEach(el => observer.observe(el));
-  }
-
-  document.addEventListener('astro:page-load', initHomePage);
-</script>
