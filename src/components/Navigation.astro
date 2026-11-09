@@ -29,11 +29,7 @@ const navIcons: Record<string, string> = {
   <div class="nav-inner">
     <div class="nav-left">
       <a href="/" class="nav-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="2" y="6" width="20" height="12" rx="6" stroke="currentColor" stroke-width="2"/>
-          <circle cx="8" cy="12" r="2" fill="currentColor"/>
-          <circle cx="16" cy="12" r="2" fill="currentColor"/>
-        </svg>
+        <img src="/logo.png" alt="" width="24" height="24" class="nav-logo-mark" />
         <span>{siteConfig.title}</span>
       </a>
 
@@ -142,6 +138,14 @@ const navIcons: Record<string, string> = {
 
   .nav-logo:hover {
     color: var(--color-primary);
+  }
+
+  .nav-logo-mark {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    object-fit: cover;
   }
 
   .nav-links {

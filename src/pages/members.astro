@@ -3,14 +3,161 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import { siteConfig } from '../config';
+import rawMemberMap from '../data/planet/member-map.json';
+import type { PlanetMemberMap } from '../type/planet';
+
+const memberMap = rawMemberMap as PlanetMemberMap;
+const members = Object.values(memberMap);
+const description = 'Joined members and their blog sites & RSS feeds.';
+const pageLead = 'Joined members and their blog sites & RSS feeds';
 ---
 
-<BaseLayout title={'Members - ' + siteConfig.title}>
+<BaseLayout title={'Members - ' + siteConfig.title} description={description}>
   <Navigation />
 
-  <main class="container" style="padding-top: 6rem;">
-    {/* Content pending — intentionally left empty */}
+  <main class="container planet-page">
+    <header class="page-header">
+      <h1>Members</h1>
+      <p class="page-description">{pageLead} · {members.length} members</p>
+    </header>
+
+    <div class="member-grid">
+      {members.map(member => (
+        <article class="member-card">
+          <img
+            class="member-card__avatar"
+            src={`/planet/avatars/${member.avatar}`}
+            alt={`${member.name}'s avatar`}
+            width="56"
+            height="56"
+            loading="lazy"
+          />
+          <div class="member-card__body">
+            <h2 class="member-card__name">{member.name}</h2>
+            <p class="member-card__description">{member.description}</p>
+            <div class="member-card__links">
+              <a href={member.site} target="_blank" rel="noopener noreferrer">Blog</a>
+              <a href={member.feed} target="_blank" rel="noopener noreferrer">RSS</a>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
   </main>
 
   <Footer />
 </BaseLayout>
+
+<style>
+  .planet-page {
+    padding-top: 6rem;
+  }
+
+  .page-header {
+    padding: 2rem 0 2rem;
+  }
+
+  .page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header h1::before {
+    content: '';
+    width: 4px;
+    height: 1.1em;
+    border-radius: 9999px;
+    background: var(--color-primary);
+  }
+
+  .page-description {
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .member-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .member-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .member-card:hover {
+    border-color: var(--color-primary);
+    background: var(--bg-tertiary);
+  }
+
+  .member-card__avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    background: var(--bg-tertiary);
+  }
+
+  .member-card__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .member-card__name {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+  }
+
+  .member-card__description {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .member-card__links {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .member-card__links a {
+    color: var(--color-primary);
+  }
+
+  .member-card__links a:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 520px) {
+    .member-card {
+      padding: 1rem;
+    }
+
+    .member-card__avatar {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>

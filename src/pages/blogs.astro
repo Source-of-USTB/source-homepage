@@ -3,14 +3,199 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import { siteConfig } from '../config';
+import rawPosts from '../data/planet/posts.json';
+import rawMemberMap from '../data/planet/member-map.json';
+import type { PlanetMemberMap, PlanetPost } from '../type/planet';
+import sanitizeHtml from 'sanitize-html';
+
+const posts = rawPosts as PlanetPost[];
+const memberMap = rawMemberMap as PlanetMemberMap;
+
+const description = 'Latest posts from joined members.';
+const pageLead = 'Latest posts from joined members';
+
+const sanitizeOptions: sanitizeHtml.IOptions = {
+  allowedTags: ['p', 'br', 'a', 'strong', 'b', 'em', 'i', 'del', 's', 'code'],
+  allowedAttributes: {
+    a: ['href', 'target', 'rel'],
+  },
+  allowedSchemes: ['http', 'https'],
+  transformTags: {
+    a: sanitizeHtml.simpleTransform('a', {
+      target: '_blank',
+      rel: 'noopener noreferrer nofollow',
+    }),
+  },
+};
+
+const items = posts.map(post => ({
+  ...post,
+  description: sanitizeHtml(post.description?.trim() || 'No description', sanitizeOptions),
+  avatar: memberMap[post.authorId]?.avatar ?? 'default.png',
+}));
 ---
 
-<BaseLayout title={'Blogs - ' + siteConfig.title}>
+<BaseLayout title={'Blogs - ' + siteConfig.title} description={description}>
   <Navigation />
 
-  <main class="container" style="padding-top: 6rem;">
-    {/* Content pending — intentionally left empty */}
+  <main class="container planet-page">
+    <header class="page-header">
+      <h1>Blogs</h1>
+      <p class="page-description">{pageLead} · {items.length} posts</p>
+    </header>
+
+    <div class="posts-list">
+      {items.map(post => (
+        <article class="post-card">
+          <img
+            class="post-card__avatar"
+            src={`/planet/avatars/${post.avatar}`}
+            alt={`${post.authorName}'s avatar`}
+            width="56"
+            height="56"
+            loading="lazy"
+          />
+          <div class="post-card__body">
+            <h2 class="post-card__title">
+              <a href={post.link} target="_blank" rel="noopener noreferrer">{post.title}</a>
+            </h2>
+            <div class="post-card__meta">
+              <time datetime={post.publishedAt ?? ''}>{post.dateKey ?? 'unknown date'}</time>
+              <span>{post.authorName}</span>
+            </div>
+            <div class="post-card__description" set:html={post.description} />
+          </div>
+        </article>
+      ))}
+    </div>
   </main>
 
   <Footer />
 </BaseLayout>
+
+<style>
+  .planet-page {
+    padding-top: 6rem;
+  }
+
+  .page-header {
+    padding: 2rem 0 2rem;
+  }
+
+  .page-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-header h1::before {
+    content: '';
+    width: 4px;
+    height: 1.1em;
+    border-radius: 9999px;
+    background: var(--color-primary);
+  }
+
+  .page-description {
+    color: var(--text-tertiary);
+    margin: 0;
+  }
+
+  .posts-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .post-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .post-card:hover {
+    border-color: var(--color-primary);
+    background: var(--bg-tertiary);
+  }
+
+  .post-card__avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+    background: var(--bg-tertiary);
+  }
+
+  .post-card__body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .post-card__title {
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .post-card__title a {
+    color: var(--text-primary);
+  }
+
+  .post-card__title a:hover {
+    color: var(--color-primary);
+  }
+
+  .post-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    color: var(--text-tertiary);
+    font-size: 0.8125rem;
+  }
+
+  .post-card__description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+
+  .post-card__description :global(p) {
+    margin: 0 0 0.5rem;
+  }
+
+  .post-card__description :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .post-card__description :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .post-card__description :global(a:hover) {
+    color: var(--color-primary-hover);
+  }
+
+  @media (max-width: 520px) {
+    .post-card {
+      padding: 1rem;
+    }
+
+    .post-card__avatar {
+      width: 44px;
+      height: 44px;
+    }
+  }
+</style>

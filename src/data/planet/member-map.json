@@ -1,0 +1,72 @@
+{
+  "Siriuns": {
+    "name": "Siriuns",
+    "site": "https://siriuns.netlify.app",
+    "feed": "https://siriuns.netlify.app/rss.xml",
+    "avatar": "siriuns.jpg",
+    "description": "Reconnecting... 1/5"
+  },
+  "wdlin": {
+    "name": "wdlin",
+    "site": "https://blog.wdlin.com",
+    "feed": "https://blog.wdlin.com/rss.xml",
+    "avatar": "wdlin.jpg",
+    "description": "Thinking..."
+  },
+  "revlogi": {
+    "name": "RevLogi",
+    "site": "https://revlogi.github.io",
+    "feed": "https://revlogi.github.io/rss.xml",
+    "avatar": "revlogi.jpg",
+    "description": "an ignorant learner"
+  },
+  "wamingmo": {
+    "name": "wamingmo",
+    "site": "https://wamingmo.github.io",
+    "feed": "https://wamingmo.github.io/atom.xml",
+    "avatar": "wamingmo.jpg",
+    "description": "this person is lazy and leaves nothing here"
+  },
+  "episvr": {
+    "name": "episvr",
+    "site": "https://blog.episvr.top",
+    "feed": "https://blog.episvr.top/atom.xml",
+    "avatar": "episvr.jpg",
+    "description": "the one who always gets jumped over by the quick fox"
+  },
+  "level0-jj": {
+    "name": "level0-jj",
+    "site": "https://level0-jj.github.io",
+    "feed": "https://level0-jj.github.io/rss2.xml",
+    "avatar": "level0-jj.jpg",
+    "description": "Type a message…"
+  },
+  "isHarryh": {
+    "name": "Harry Huang",
+    "site": "https://blog.harryh.cn",
+    "feed": "https://blog.harryh.cn/atom.xml",
+    "avatar": "isHarryh.png",
+    "description": "Permission denied"
+  },
+  "YOOkoishi": {
+    "name": "YOO_koishi",
+    "site": "https://blog.yookoishi.com",
+    "feed": "https://blog.yookoishi.com/rss.xml",
+    "avatar": "yookoishi.jpg",
+    "description": "YOO_koishi's blog"
+  },
+  "vespertine97": {
+    "name": "魏欣怡",
+    "site": "https://vespertine97.github.io/",
+    "feed": "https://vespertine97.github.io/atom.xml",
+    "avatar": "Vespertine97.jpg",
+    "description": "你走出千萬人群獨行，往柳暗花明 山窮水盡去"
+  },
+  "ybnybny": {
+    "name": "ybnybny",
+    "site": "https://ybnybny.github.io",
+    "feed": "https://ybnybny.github.io/source/index.xml",
+    "avatar": "ybnybny.png",
+    "description": "description?"
+  }
+}
