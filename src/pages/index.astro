@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import { siteConfig } from '../config';
+import Departments from '../markdown/departments.md';
 
 const socialLinks = [
   {
@@ -55,6 +56,51 @@ const socialLinks = [
           </a>
         ))}
       </div>
+    </section>
+
+    <section class="about" aria-labelledby="about-heading">
+      <h2 class="section-heading" id="about-heading">社团简介</h2>
+
+      <figure class="about-photo">
+        <img
+          src="/images/club/group-photo.jpg"
+          alt="2025年秋北京科技大学索思科技协会合影留念"
+          width="1080"
+          height="608"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <div class="about-copy">
+        <p>
+          协会下设办公室、学术部、宣传部、技术部四大职能部门，并搭建功能型团支部与竞赛团队联盟；汇聚百余名跨年级、跨学院的科创爱好者，致力于打通课堂理论与科技实践之间的壁垒。
+        </p>
+      </div>
+
+      <figure class="about-chart">
+        <img
+          src="/images/club/org-chart.png"
+          alt="索思科技协会组织架构：主席团下设办公室、宣传部、学术部、技术部，技术部下设技术宣传组、运维保障组、游戏开发组、硬件开发组、项目研发组和 B06 创新实验室"
+          width="1080"
+          height="310"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <div class="about-copy">
+        <p>
+          索思近年来先后获评2025年首都高校“学生最喜爱的社团”、北科“87级校友基金”优秀学生社团、第八届“计通之光”计通先锋，连续四年获评iCAN大赛“十佳创新社团”，并拥有校“团内百优”优秀团支部、华为智能基座“披荆斩棘奖”等荣誉。
+        </p>
+        <p>
+          成员累计获得200余项竞赛奖项，其中国家级50余项、省部级100余项，并产出多篇学术论文与在审发明专利；多名社员跻身年级前列，获得国家奖学金。
+        </p>
+      </div>
+    </section>
+
+    <section class="departments">
+      <Departments />
     </section>
   </main>
 
@@ -122,5 +168,163 @@ const socialLinks = [
 
   .hero-social-icon {
     flex-shrink: 0;
+  }
+
+  .about {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 3.5rem;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-heading::before {
+    content: '';
+    width: 4px;
+    height: 1.15em;
+    border-radius: 9999px;
+    background: var(--color-primary);
+  }
+
+  .about-photo,
+  .about-chart {
+    margin: 0 0 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .about-photo img,
+  .about-chart img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .about-chart {
+    padding: 1.25rem;
+  }
+
+  .about-copy {
+    margin-bottom: 1.5rem;
+  }
+
+  .about-copy p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.95;
+    margin: 0 0 1rem;
+  }
+
+  .about-copy p:last-child {
+    margin-bottom: 0;
+  }
+
+
+  .departments {
+    max-width: 800px;
+    margin: 3.5rem auto 0;
+  }
+
+  .departments :global(h1) {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .departments :global(h1)::before {
+    content: '';
+    width: 4px;
+    height: 1.15em;
+    border-radius: 9999px;
+    background: var(--color-primary);
+  }
+
+  .departments :global(.dept-photo) {
+    margin: 1rem 0 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .departments :global(.dept-photo img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .departments :global(h2) {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 2rem 0 0.5rem;
+    font-size: 1.15rem;
+    color: var(--text-primary);
+  }
+
+  .departments :global(h2)::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+  }
+
+  .departments :global(h3) {
+    margin: 1.5rem 0 0.35rem;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+  }
+
+  .departments :global(p) {
+    margin: 0 0 0.75rem;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.9;
+  }
+
+  .departments :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 520px) {
+    .departments {
+      margin-top: 2.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .about-chart {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+
+    .about-chart img {
+      min-width: 680px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .about {
+      padding-top: 2.5rem;
+    }
+
+    .about-photo,
+    .about-chart {
+      border-radius: 12px;
+    }
+
+    .about-chart {
+      padding: 0.75rem;
+    }
   }
 </style>

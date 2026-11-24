@@ -44,6 +44,17 @@ const navIcons: Record<string, string> = {
     </div>
 
     <div class="nav-right">
+      <button class="palette-trigger" type="button" data-palette-open aria-label="词语换色" aria-haspopup="dialog" aria-controls="palette-modal" title="词语换色">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22a10 10 0 1 1 10-10c0 2.2-1.8 4-4 4h-2.2a2 2 0 0 0-1.6 3.2c.5.6.8 1.4.8 2.3 0 1.4-1.3 2.5-3 2.5z"/>
+          <circle cx="7.5" cy="10.5" r="1"/>
+          <circle cx="10.5" cy="7" r="1"/>
+          <circle cx="14.5" cy="7" r="1"/>
+          <circle cx="17" cy="10" r="1"/>
+        </svg>
+        <span class="palette-trigger__label">换色</span>
+      </button>
+
       <div class="theme-capsule" id="theme-capsule">
         <button class="theme-option" data-theme="auto" title="Auto (follow device)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -87,6 +98,16 @@ const navIcons: Record<string, string> = {
         <span>{link.title}</span>
       </a>
     ))}
+    <button class="mobile-link palette-mobile-trigger" type="button" data-palette-open aria-haspopup="dialog" aria-controls="palette-modal">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22a10 10 0 1 1 10-10c0 2.2-1.8 4-4 4h-2.2a2 2 0 0 0-1.6 3.2c.5.6.8 1.4.8 2.3 0 1.4-1.3 2.5-3 2.5z"/>
+          <circle cx="7.5" cy="10.5" r="1"/>
+          <circle cx="10.5" cy="7" r="1"/>
+          <circle cx="14.5" cy="7" r="1"/>
+          <circle cx="17" cy="10" r="1"/>
+        </svg>
+      <span>换色</span>
+    </button>
   </div>
 </nav>
 
@@ -165,6 +186,58 @@ const navIcons: Record<string, string> = {
 
   .nav-link:hover {
     color: var(--color-primary);
+  }
+
+  /* Word-to-color palette trigger */
+  .palette-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.625rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .palette-trigger:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background: var(--bg-tertiary);
+  }
+
+  .palette-trigger svg {
+    flex-shrink: 0;
+  }
+
+  .palette-mobile-trigger {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  @media (max-width: 900px) {
+    .palette-trigger__label {
+      display: none;
+    }
+
+    .palette-trigger {
+      padding: 0.5rem;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .palette-trigger {
+      display: none;
+    }
   }
 
   /* Theme Capsule Switcher */
@@ -258,7 +331,7 @@ const navIcons: Record<string, string> = {
     color: var(--color-primary);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 760px) {
     .nav-links {
       display: none;
     }

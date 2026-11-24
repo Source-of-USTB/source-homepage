@@ -6,6 +6,7 @@ import { ClientRouter } from 'astro:transitions';
 import BackToTop from '../components/BackToTop.astro';
 import CodeBlockCopy from '../components/CodeBlockCopy.astro';
 import Lightbox from '../components/Lightbox.astro';
+import PaletteTheme from '../components/PaletteTheme.astro';
 
 interface Props {
   title?: string;
@@ -44,6 +45,31 @@ const {
         document.documentElement.classList.add(effectiveTheme);
       })();
 
+      // Apply the saved theme to the incoming document before it is swapped in.
+      // This prevents the light default from flashing during page transitions.
+      document.addEventListener('astro:before-swap', (event) => {
+        if (!event.newDocument) return;
+        const saved = localStorage.getItem('theme') || 'auto';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const effectiveTheme = saved === 'auto' ? (prefersDark ? 'dark' : 'light') : saved;
+        const newRoot = event.newDocument.documentElement;
+        newRoot.setAttribute('data-theme', saved);
+        newRoot.classList.remove('dark', 'light');
+        newRoot.classList.add(effectiveTheme);
+
+        // Carry word-palette variables over before the new page is painted.
+        const currentRoot = document.documentElement;
+        const currentStyle = currentRoot.style;
+        for (let i = 0; i < currentStyle.length; i++) {
+          const prop = currentStyle[i];
+          if (prop.indexOf('--') === 0) {
+            newRoot.style.setProperty(prop, currentStyle.getPropertyValue(prop));
+          }
+        }
+        const palette = currentRoot.getAttribute('data-palette');
+        if (palette) newRoot.setAttribute('data-palette', palette);
+      });
+
       // Re-apply theme after View Transitions swap (before page is visible)
       document.addEventListener('astro:after-swap', () => {
         const saved = localStorage.getItem('theme') || 'auto';
@@ -54,11 +80,32 @@ const {
         document.documentElement.classList.add(effectiveTheme);
       });
     </script>
+
+    {/* Apply a saved word palette before paint to avoid a flash of the default theme */}
+    <script is:inline>
+      (function() {
+        try {
+          var raw = localStorage.getItem('palette-theme');
+          if (!raw) return;
+          var state = JSON.parse(raw);
+          var mode = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+          var vars = state && state.modes && state.modes[mode];
+          if (!vars) return;
+          for (var key in vars) {
+            if (Object.prototype.hasOwnProperty.call(vars, key)) {
+              document.documentElement.style.setProperty(key, vars[key]);
+            }
+          }
+          document.documentElement.setAttribute('data-palette', 'on');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <slot />
     {siteConfig.features?.backToTop && <BackToTop />}
     <CodeBlockCopy />
     {siteConfig.features?.lightbox && <Lightbox />}
+    <PaletteTheme />
   </body>
 </html>

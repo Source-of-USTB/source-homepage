@@ -23,12 +23,12 @@
   --text-secondary: #475569;
   --text-tertiary: #5a6b7d;
 
-  /* Home intro — muted rose, readable on the light background */
-  --home-intro-color: #943851;
+  /* Home intro — pure black in light mode */
+  --home-intro-color: #000000;
 
   /* Info cards on the Blogs and Members pages */
-  --planet-info-bg: #cee1e8;
-  --planet-info-bg-hover: #dcecf2;
+  --planet-info-bg: #d5e2e7;
+  --planet-info-bg-hover: #dfe8ec;
   --planet-info-border: #a8cfdd;
 
   /* Border */
@@ -53,7 +53,7 @@
 
 /* Dark Mode — dark rose background & golden accent, only via html.dark class */
 html.dark {
-  --bg-primary: #2b0d15;
+  --bg-primary: #241212;
   --bg-secondary: #391821;
   --bg-tertiary: #4d2d36;
 
@@ -65,7 +65,7 @@ html.dark {
   --text-secondary: #e6c7cf;
   --text-tertiary: #b6919b;
 
-  /* Home intro — same hue as the background, lighter and less saturated */
+  /* Home intro — muted rose in dark mode */
   --home-intro-color: #c5778c;
 
   /* Info cards on the Blogs and Members pages */
@@ -80,7 +80,7 @@ html.dark {
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
 
-  --nav-bg: rgba(43, 13, 21, 0.8);
+  --nav-bg: rgba(36, 18, 18, 0.8);
   --nav-border: rgba(77, 45, 54, 0.8);
 
 
@@ -99,6 +99,7 @@ html.dark {
 html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   scroll-behavior: smooth;
+  background-color: var(--bg-primary);
 }
 
 body {

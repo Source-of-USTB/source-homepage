@@ -1,0 +1,754 @@
+<div class="palette-modal" id="palette-modal" aria-hidden="true">
+  <div class="palette-modal__backdrop" data-palette-close></div>
+  <div class="palette-panel" role="dialog" aria-modal="true" aria-labelledby="palette-title" aria-describedby="palette-desc">
+    <div class="palette-header">
+      <div>
+        <p class="palette-eyebrow">WORD → COLOR</p>
+        <h2 class="palette-title" id="palette-title">词语换色</h2>
+      </div>
+      <button class="palette-close" type="button" data-palette-close aria-label="关闭">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <p class="palette-desc" id="palette-desc">
+      输入一个词，网站的整套配色会随词语变化。模型完全在本地浏览器运行，不会上传你的输入。
+    </p>
+
+    <div class="palette-form" id="palette-form" role="group" aria-label="词语换色">
+      <input
+        class="palette-input"
+        id="palette-input"
+        name="word"
+        type="text"
+        maxlength="40"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="樱花 / 深夜的海 / 抹茶 / sakura"
+        aria-label="输入一个词"
+      />
+      <button class="palette-submit" id="palette-submit" type="button">换色</button>
+    </div>
+
+    <div class="palette-chips" aria-label="示例词语">
+      <span>试试：</span>
+      <button type="button" data-palette-word="樱花">樱花</button>
+      <button type="button" data-palette-word="深夜的海">深夜的海</button>
+      <button type="button" data-palette-word="抹茶">抹茶</button>
+      <button type="button" data-palette-word="灵梦">灵梦</button>
+      <button type="button" data-palette-word="sakura">sakura</button>
+    </div>
+
+    <div class="palette-status" id="palette-status" role="status" aria-live="polite">
+      输入一个词，按 Enter 换色（首次使用需加载本地模型）
+    </div>
+
+    <div class="palette-preview" id="palette-preview" hidden>
+      <div class="palette-swatches" id="palette-swatches"></div>
+      <p class="palette-meta" id="palette-meta"></p>
+    </div>
+
+    <div class="palette-footer">
+      <button class="palette-reset" id="palette-reset" type="button" disabled>恢复默认配色</button>
+      <span class="palette-note">本地模型 · 4.9MB</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .palette-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+  }
+
+  .palette-modal.is-open {
+    display: flex;
+  }
+
+  .palette-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .palette-panel {
+    position: relative;
+    width: min(100%, 520px);
+    max-height: calc(100vh - 2.5rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    animation: palette-in 180ms ease both;
+  }
+
+  @keyframes palette-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .palette-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .palette-eyebrow {
+    margin: 0 0 0.25rem;
+    color: var(--text-tertiary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+  }
+
+  .palette-title {
+    margin: 0;
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  .palette-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .palette-close:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+
+  .palette-desc {
+    margin: 0.75rem 0 1rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  .palette-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .palette-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font: inherit;
+    font-size: 0.9375rem;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .palette-input::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  .palette-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
+  }
+
+  .palette-submit {
+    flex-shrink: 0;
+    padding: 0 1rem;
+    border: none;
+    border-radius: 12px;
+    background: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast), opacity var(--transition-fast);
+  }
+
+  .palette-submit:hover {
+    background: var(--color-primary-hover);
+  }
+
+  .palette-submit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+
+  .palette-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.65rem;
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+  }
+
+  .palette-chips button {
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+  }
+
+  .palette-chips button:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .palette-status {
+    min-height: 1.35em;
+    margin-top: 0.9rem;
+    color: var(--text-tertiary);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .palette-status.is-error {
+    color: var(--palette-danger, #c0392b);
+  }
+
+  .palette-preview {
+    margin-top: 0.6rem;
+  }
+
+  .palette-preview[hidden] {
+    display: none;
+  }
+
+  .palette-swatches {
+    display: flex;
+    height: 28px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+  }
+
+  .palette-swatches :global(span) {
+    flex: 1;
+  }
+
+  .palette-meta {
+    margin: 0.4rem 0 0;
+    color: var(--text-tertiary);
+    font-size: 0.75rem;
+  }
+
+  .palette-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .palette-reset {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .palette-reset:hover {
+    color: var(--color-primary);
+  }
+
+  .palette-reset:disabled {
+    opacity: 0.45;
+    cursor: default;
+    text-decoration: none;
+  }
+
+  .palette-note {
+    color: var(--text-tertiary);
+    font-size: 0.6875rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 520px) {
+    .palette-modal {
+      padding: 0.75rem;
+    }
+
+    .palette-panel {
+      padding: 1.15rem;
+      border-radius: 18px;
+    }
+
+    .palette-form {
+      gap: 0.4rem;
+    }
+
+    .palette-submit {
+      padding: 0 0.8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .palette-panel {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  type PaletteMode = 'light' | 'dark';
+
+  interface PalettePreview {
+    scale: string[];
+    contrast: string | null;
+    confidence: number;
+    weak: boolean;
+  }
+
+  interface PaletteState {
+    word: string;
+    modes: Record<PaletteMode, Record<string, string>>;
+    preview: PalettePreview;
+  }
+
+  const STORAGE_KEY = 'palette-theme';
+  const DEFAULT_STATUS = '输入一个词，按 Enter 换色（首次使用需加载本地模型）';
+
+  const SITE_VARS = [
+    '--bg-primary',
+    '--bg-secondary',
+    '--bg-tertiary',
+    '--border-color',
+    '--border-color-hover',
+    '--text-primary',
+    '--text-secondary',
+    '--text-tertiary',
+    '--color-primary',
+    '--color-primary-hover',
+    '--color-primary-contrast',
+    '--color-primary-light',
+    '--color-primary-dark',
+    '--nav-bg',
+    '--nav-border',
+    '--home-intro-color',
+    '--planet-info-bg',
+    '--planet-info-bg-hover',
+    '--planet-info-border',
+    '--palette-danger',
+  ];
+
+  let state: PaletteState | null = null;
+  let enginePromise: Promise<any> | null = null;
+  let busy = false;
+  let lastTrigger: HTMLElement | null = null;
+
+  function currentMode(): PaletteMode {
+    return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  }
+
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const existing = document.querySelector(`script[data-palette-engine="${src}"]`);
+      if (existing) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.dataset.paletteEngine = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`无法加载 ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  function ensureEngine(): Promise<any> {
+    if (!enginePromise) {
+      enginePromise = (async () => {
+        if (!(window as any).PaletteNet) await loadScript('/palette/runtime.js');
+        if (!(window as any).PaletteTheme) await loadScript('/palette/theme.js');
+        await (window as any).PaletteTheme.init({
+          base: '/palette',
+          overrides: '/palette/overrides.json',
+        });
+        return (window as any).PaletteTheme;
+      })().catch(error => {
+        enginePromise = null;
+        throw error;
+      });
+    }
+    return enginePromise;
+  }
+
+  function parseHex(hex: string): [number, number, number] {
+    const value = hex.replace('#', '');
+    const full = value.length === 3 ? value.split('').map(c => c + c).join('') : value;
+    return [
+      parseInt(full.slice(0, 2), 16),
+      parseInt(full.slice(2, 4), 16),
+      parseInt(full.slice(4, 6), 16),
+    ];
+  }
+
+  function toHex(value: number): string {
+    return Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, '0');
+  }
+
+  function mixHex(a: string, b: string, t: number): string {
+    const [r1, g1, b1] = parseHex(a);
+    const [r2, g2, b2] = parseHex(b);
+    return `#${toHex(r1 + (r2 - r1) * t)}${toHex(g1 + (g2 - g1) * t)}${toHex(b1 + (b2 - b1) * t)}`;
+  }
+
+  function hexToRgba(hex: string, alpha: number): string {
+    const [r, g, b] = parseHex(hex);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  function mapTokens(t: any): Record<string, string> {
+    const light = t.mode === 'light';
+    return {
+      '--bg-primary': t.bg,
+      '--bg-secondary': t.surface,
+      '--bg-tertiary': t.surfaceAlt,
+      '--border-color': t.border,
+      '--border-color-hover': mixHex(t.border, t.text, 0.3),
+      '--text-primary': t.text,
+      '--text-secondary': t.muted,
+      '--text-tertiary': mixHex(t.muted, t.bg, 0.28),
+      '--color-primary': t.primary,
+      '--color-primary-hover': t.primaryHover,
+      '--color-primary-contrast': t.onPrimary,
+      '--color-primary-light': mixHex(t.bg, t.primary, 0.14),
+      '--color-primary-dark': mixHex(t.primary, t.text, 0.3),
+      '--nav-bg': hexToRgba(t.bg, 0.82),
+      '--nav-border': hexToRgba(t.border, 0.85),
+      '--home-intro-color': t.text,
+      '--planet-info-bg': light ? mixHex(t.bg, t.primary, 0.1) : t.surfaceAlt,
+      '--planet-info-bg-hover': light ? mixHex(t.bg, t.primary, 0.17) : t.surface,
+      '--planet-info-border': light ? mixHex(t.bg, t.primary, 0.3) : t.border,
+      '--palette-danger': t.danger,
+    };
+  }
+
+  function applyVars(vars: Record<string, string>) {
+    const root = document.documentElement;
+    for (const [key, value] of Object.entries(vars)) {
+      root.style.setProperty(key, value);
+    }
+    root.setAttribute('data-palette', 'on');
+  }
+
+  function clearVars() {
+    const root = document.documentElement;
+    for (const key of SITE_VARS) root.style.removeProperty(key);
+    root.removeAttribute('data-palette');
+  }
+
+  function loadState(): PaletteState | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as PaletteState;
+      if (
+        !parsed ||
+        typeof parsed.word !== 'string' ||
+        !parsed.modes ||
+        !parsed.modes.light ||
+        !parsed.modes.dark
+      ) {
+        return null;
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveState(next: PaletteState) {
+    state = next;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // Storage can be unavailable in private mode; the visual state still works.
+    }
+  }
+
+  function setStatus(text: string, isError = false) {
+    const el = document.querySelector<HTMLElement>('#palette-status');
+    if (!el) return;
+    el.textContent = text;
+    el.classList.toggle('is-error', isError);
+  }
+
+  function renderPreview(preview: PalettePreview | null) {
+    const wrap = document.querySelector<HTMLElement>('#palette-preview');
+    const swatches = document.querySelector<HTMLElement>('#palette-swatches');
+    const meta = document.querySelector<HTMLElement>('#palette-meta');
+    if (!wrap || !swatches || !meta) return;
+    if (!preview || !preview.scale || preview.scale.length === 0) {
+      wrap.hidden = true;
+      swatches.innerHTML = '';
+      meta.textContent = '';
+      return;
+    }
+    const colors = preview.scale.slice(0, 8);
+    swatches.innerHTML =
+      colors.map(color => `<span style="background:${color}"></span>`).join('') +
+      (preview.contrast ? `<span style="background:${preview.contrast}"></span>` : '');
+    meta.textContent = `置信度 ${preview.confidence.toFixed(2)}${preview.weak ? ' · 词语色彩特征较弱' : ''}`;
+    wrap.hidden = false;
+  }
+
+  function updateModalFromState() {
+    const input = document.querySelector<HTMLInputElement>('#palette-input');
+    const reset = document.querySelector<HTMLButtonElement>('#palette-reset');
+    if (!input || !reset) return;
+    if (state) {
+      if (document.activeElement !== input) input.value = state.word;
+      renderPreview(state.preview);
+      reset.disabled = false;
+      setStatus(`当前配色来自「${state.word}」`);
+    } else {
+      input.value = '';
+      renderPreview(null);
+      reset.disabled = true;
+      setStatus(DEFAULT_STATUS);
+    }
+  }
+
+  function openModal(trigger: HTMLElement) {
+    const modal = document.querySelector<HTMLElement>('#palette-modal');
+    if (!modal) return;
+    lastTrigger = trigger;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    updateModalFromState();
+    window.setTimeout(() => {
+      document.querySelector<HTMLInputElement>('#palette-input')?.focus();
+    }, 30);
+  }
+
+  function closeModal() {
+    const modal = document.querySelector<HTMLElement>('#palette-modal');
+    if (!modal) return;
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    const focusTarget =
+      lastTrigger && lastTrigger.offsetParent !== null
+        ? lastTrigger
+        : (document.querySelector<HTMLElement>('#mobile-menu-btn') || document.querySelector<HTMLElement>('.palette-trigger'));
+    focusTarget?.focus();
+  }
+
+  async function applyWord(raw: string) {
+    const word = raw.trim().slice(0, 40);
+    if (!word || busy) return;
+
+    busy = true;
+    const submit = document.querySelector<HTMLButtonElement>('#palette-submit');
+    const input = document.querySelector<HTMLInputElement>('#palette-input');
+    if (input) input.value = word;
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = '换色中…';
+    }
+
+    try {
+      setStatus((window as any).PaletteTheme ? '正在生成配色…' : '正在加载配色模型（约 4.9MB）…');
+      const engine = await ensureEngine();
+      setStatus('正在生成配色…');
+      await new Promise(resolve => setTimeout(resolve, 20));
+
+      const lightTokens = engine.tokens(word, { mode: 'light' });
+      const darkTokens = engine.tokens(word, { mode: 'dark' });
+      const next: PaletteState = {
+        word,
+        modes: {
+          light: mapTokens(lightTokens),
+          dark: mapTokens(darkTokens),
+        },
+        preview: {
+          scale: (lightTokens.scale || []).map((color: any) => color.hex),
+          contrast: lightTokens.contrast ? lightTokens.contrast.hex : null,
+          confidence: Number(lightTokens.confidence) || 0,
+          weak: Boolean(lightTokens.weak),
+        },
+      };
+
+      saveState(next);
+      applyVars(next.modes[currentMode()]);
+      renderPreview(next.preview);
+      const reset = document.querySelector<HTMLButtonElement>('#palette-reset');
+      if (reset) reset.disabled = false;
+      setStatus(`已应用「${word}」${next.preview.weak ? ' · 词语色彩特征较弱' : ''}`);
+    } catch (error) {
+      console.error('[PaletteTheme]', error);
+      setStatus('换色失败，请检查网络后重试', true);
+    } finally {
+      busy = false;
+      if (submit) {
+        submit.disabled = false;
+        submit.textContent = '换色';
+      }
+    }
+  }
+
+  function resetPalette() {
+    clearVars();
+    state = null;
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Ignore storage errors.
+    }
+    const input = document.querySelector<HTMLInputElement>('#palette-input');
+    const reset = document.querySelector<HTMLButtonElement>('#palette-reset');
+    if (input) input.value = '';
+    if (reset) reset.disabled = true;
+    renderPreview(null);
+    setStatus('已恢复默认配色');
+  }
+
+  function restorePalette() {
+    state = loadState();
+    document.documentElement.style.overflow = '';
+    if (!state) {
+      clearVars();
+      return;
+    }
+    const vars = state.modes[currentMode()];
+    if (vars) applyVars(vars);
+  }
+
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const open = target.closest('[data-palette-open]') as HTMLElement | null;
+    if (open) {
+      event.preventDefault();
+      openModal(open);
+      return;
+    }
+
+    if (target.closest('[data-palette-close]')) {
+      event.preventDefault();
+      closeModal();
+      return;
+    }
+
+    if (target.closest('#palette-reset')) {
+      event.preventDefault();
+      resetPalette();
+      return;
+    }
+
+    if (target.closest('#palette-submit')) {
+      event.preventDefault();
+      const input = document.querySelector<HTMLInputElement>('#palette-input');
+      if (input) applyWord(input.value);
+      return;
+    }
+
+    const chip = target.closest('[data-palette-word]') as HTMLElement | null;
+    if (chip) {
+      event.preventDefault();
+      const word = chip.dataset.paletteWord;
+      if (word) {
+        const input = document.querySelector<HTMLInputElement>('#palette-input');
+        if (input) input.value = word;
+        applyWord(word);
+      }
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    const modal = document.querySelector<HTMLElement>('#palette-modal');
+    if (!modal || !modal.classList.contains('is-open')) return;
+
+    if (event.key === 'Escape') {
+      closeModal();
+      return;
+    }
+
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement && event.target.id === 'palette-input') {
+      if (!(event as KeyboardEvent).isComposing) {
+        event.preventDefault();
+        applyWord(event.target.value);
+      }
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+    const panel = modal.querySelector<HTMLElement>('.palette-panel');
+    if (!panel) return;
+    const focusable = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(element => element.offsetParent !== null);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  const themeObserver = new MutationObserver(() => {
+    if (!state) return;
+    const vars = state.modes[currentMode()];
+    if (vars) applyVars(vars);
+  });
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+  document.addEventListener('astro:page-load', restorePalette);
+  restorePalette();
+</script>
