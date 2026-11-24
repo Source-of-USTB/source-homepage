@@ -11,11 +11,13 @@ import PaletteTheme from '../components/PaletteTheme.astro';
 interface Props {
   title?: string;
   description?: string;
+  bodyClass?: string;
 }
 
 const {
   title = siteConfig.title,
-  description = siteConfig.description
+  description = siteConfig.description,
+  bodyClass
 } = Astro.props;
 ---
 
@@ -101,7 +103,7 @@ const {
       })();
     </script>
   </head>
-  <body>
+  <body class={bodyClass}>
     <slot />
     {siteConfig.features?.backToTop && <BackToTop />}
     <CodeBlockCopy />

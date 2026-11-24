@@ -3,14 +3,1049 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import { siteConfig } from '../config';
+import gallery from '../data/gallery.json';
+
+const sections = [
+  { id: 'group', label: '合照', en: 'GROUP', images: gallery.group.images },
+  { id: 'activity', label: '活动照', en: 'ACTIVITY', images: gallery.activity.images },
+  { id: 'single', label: '个人照', en: 'PORTRAIT', images: gallery.single.images },
+];
+
+const socialLinks = [
+  { label: 'Bilibili', href: 'https://space.bilibili.com/3632313615256374', icon: 'bilibili' },
+  { label: '微信公众号', href: 'https://mp.weixin.qq.com/s/JEQ_mOdutMnV17chkp6JZQ', icon: 'wechat' },
+  { label: 'QQ 群', href: 'https://qm.qq.com/q/bhJtg9qyCA', icon: 'qq' },
+];
 ---
 
-<BaseLayout title={'Gallery - ' + siteConfig.title}>
+<BaseLayout
+  title={'Gallery - ' + siteConfig.title}
+  description="索思科技协会的合照、活动照与个人影像记录。"
+  bodyClass="gallery-mode"
+>
   <Navigation />
 
-  <main class="container" style="padding-top: 6rem;">
-    {/* Content pending — intentionally left empty */}
-  </main>
+  <div class="gallery-page">
+    <h1 class="gallery-sr-title">Gallery</h1>
+    <div class="gallery-topline" aria-hidden="true"></div>
 
-  <Footer />
+    <header class="gallery-hero">
+      <aside class="gallery-sidebar" aria-label="Gallery 导航与控制">
+        <div class="gallery-sidebar-top">
+          <a class="gallery-brand" href="/" aria-label={`${siteConfig.title} 首页`}>
+            <img src="/logo.png" alt="" width="32" height="32" />
+            <span>{siteConfig.title}</span>
+          </a>
+          <p class="gallery-kicker">PHOTO ARCHIVE</p>
+          <p class="gallery-tagline">全心求索，同道而思</p>
+        </div>
+
+        <nav class="gallery-nav" aria-label="主导航">
+          {siteConfig.nav.map((link, index) => (
+            <a
+              class:list={['gallery-nav-link', { active: link.href === '/gallery' }]}
+              href={link.href}
+              aria-current={link.href === '/gallery' ? 'page' : undefined}
+            >
+              {link.title}
+            </a>
+          ))}
+        </nav>
+
+        <div class="gallery-sidebar-bottom">
+          <div class="gallery-control-row">
+            <span class="gallery-label">MODE</span>
+            <div class="gallery-theme" role="group" aria-label="颜色模式">
+              <button class="gallery-theme-option" type="button" data-gallery-theme="auto" title="跟随系统" aria-label="跟随系统">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+              </button>
+              <button class="gallery-theme-option" type="button" data-gallery-theme="light" title="浅色模式" aria-label="浅色模式">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+              </button>
+              <button class="gallery-theme-option" type="button" data-gallery-theme="dark" title="深色模式" aria-label="深色模式">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="gallery-palette-btn" type="button" data-palette-open aria-haspopup="dialog" aria-controls="palette-modal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 22a10 10 0 1 1 10-10c0 2.2-1.8 4-4 4h-2.2a2 2 0 0 0-1.6 3.2c.5.6.8 1.4.8 2.3 0 1.4-1.3 2.5-3 2.5z"></path>
+              <circle cx="7.5" cy="10.5" r="1"></circle>
+              <circle cx="10.5" cy="7" r="1"></circle>
+              <circle cx="14.5" cy="7" r="1"></circle>
+              <circle cx="17" cy="10" r="1"></circle>
+            </svg>
+            <span>词语换色</span>
+          </button>
+
+          <div class="gallery-socials" aria-label="社交媒体">
+            {socialLinks.map(link => (
+              <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.label} title={link.label}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  {link.icon === 'bilibili' && <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"></path>}
+                  {link.icon === 'wechat' && <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"></path>}
+                  {link.icon === 'qq' && <path d="M21.395 15.035a40 40 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.526 4.632 17.351 0 12 0S4.474 4.632 4.474 9.241c0 .274.013.804.014.836l-1.08 2.695a39 39 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.379.646-.301.778.343.578 5.883.369 7.482.189 1.6.18 7.14.389 7.483-.189.078-.132.132-.458-.301-.778-.483-.356-1.233-.646-1.846-.836 1.637-1.384 2.393-3.302 2.393-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673"></path>}
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <figure class="gallery-hero-media">
+        <img
+          src={gallery.hero.src}
+          alt="索思科技协会主题视觉图"
+          width={gallery.hero.width}
+          height={gallery.hero.height}
+          fetchpriority="high"
+        />
+      </figure>
+    </header>
+
+    <main class="gallery-content">
+      {sections.map((section, sectionIndex) => (
+        <section class="gallery-section" id={`gallery-${section.id}`} aria-labelledby={`gallery-${section.id}-title`}>
+          <header class="gallery-section-head">
+            <h2 class="gallery-section-title" id={`gallery-${section.id}-title`}>
+              <span class="gallery-hash" aria-hidden="true">#</span>{section.label}
+            </h2>
+            <div class="gallery-section-meta">
+              <span class="gallery-section-count">{section.en} / {String(section.images.length).padStart(2, '0')}</span>
+              <div class="gallery-scroll-controls">
+                <button class="gallery-scroll-btn" type="button" data-gallery-scroll="-1" aria-label={`向左浏览${section.label}`}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <button class="gallery-scroll-btn" type="button" data-gallery-scroll="1" aria-label={`向右浏览${section.label}`}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <div class="gallery-row" data-gallery-row tabindex="0" aria-label={`${section.label}，横向滚动浏览，点击图片放大`}>
+            {section.images.map((image, index) => (
+              <button
+                class="gallery-card"
+                type="button"
+                data-gallery-item
+                data-full={image.full}
+                data-caption={image.caption}
+                aria-label={`查看${image.caption}`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.caption}
+                  width={image.width}
+                  height={image.height}
+                  loading={sectionIndex === 0 && index < 4 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  draggable="false"
+                />
+                <span class="gallery-card-hint" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                  </svg>
+                </span>
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
+    </main>
+
+    <Footer />
+  </div>
+
+  <div
+    class="gallery-lightbox"
+    id="gallery-lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="图片预览"
+    aria-hidden="true"
+  >
+    <div class="gallery-lightbox-backdrop" data-gallery-close></div>
+    <button class="gallery-lightbox-close" type="button" data-gallery-close aria-label="关闭预览">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <button class="gallery-lightbox-arrow is-prev" type="button" data-gallery-prev aria-label="上一张">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <figure class="gallery-lightbox-stage">
+      <img id="gallery-lightbox-image" alt="" />
+      <figcaption class="gallery-lightbox-caption">
+        <span id="gallery-lightbox-caption-text"></span>
+        <span class="gallery-lightbox-counter" id="gallery-lightbox-counter"></span>
+      </figcaption>
+    </figure>
+    <button class="gallery-lightbox-arrow is-next" type="button" data-gallery-next aria-label="下一张">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+  </div>
 </BaseLayout>
+
+<style>
+  .gallery-page {
+    --gallery-pad: clamp(1.25rem, 4vw, 3.75rem);
+    overflow-x: clip;
+  }
+
+  .gallery-sr-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .gallery-topline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1200;
+    height: 2px;
+    background: var(--color-primary);
+  }
+
+  .gallery-hero {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.24fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.75rem);
+    align-items: stretch;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: clamp(2rem, 5vh, 4rem) 0 0 var(--gallery-pad);
+  }
+
+  .gallery-sidebar {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding-bottom: 2rem;
+  }
+
+  .gallery-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .gallery-brand:hover {
+    color: var(--color-primary);
+  }
+
+  .gallery-brand img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .gallery-kicker {
+    margin-top: 1.35rem;
+    color: var(--color-primary);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+  }
+
+  .gallery-tagline {
+    margin-top: 0.35rem;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+  }
+
+  .gallery-nav {
+    display: flex;
+    flex-direction: column;
+    margin-top: clamp(2.5rem, 8vh, 5.5rem);
+  }
+
+  .gallery-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.72rem 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .gallery-nav-link:hover,
+  .gallery-nav-link.active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .gallery-sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+
+  .gallery-control-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .gallery-label {
+    color: var(--text-tertiary);
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+  }
+
+  .gallery-theme {
+    display: flex;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    background: var(--bg-secondary);
+  }
+
+  .gallery-theme-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .gallery-theme-option:hover {
+    color: var(--text-primary);
+  }
+
+  .gallery-theme-option.active {
+    background: var(--bg-primary);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .gallery-palette-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    align-self: flex-start;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .gallery-palette-btn:hover {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .gallery-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .gallery-socials a {
+    display: inline-flex;
+    color: var(--text-tertiary);
+    transition: color var(--transition-fast);
+  }
+
+  .gallery-socials a:hover {
+    color: var(--color-primary);
+  }
+
+  .gallery-hero-media {
+    position: relative;
+    min-width: 0;
+    margin: 0;
+    align-self: start;
+    overflow: hidden;
+    border-radius: 5px 0 0 5px;
+    background: var(--bg-secondary);
+  }
+
+  .gallery-hero-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .gallery-content {
+    padding: clamp(2.5rem, 6vw, 5rem) var(--gallery-pad) 0;
+  }
+
+  .gallery-section {
+    margin-top: clamp(3rem, 7vw, 6rem);
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  }
+
+  .gallery-section:first-child {
+    margin-top: 0;
+  }
+
+  .gallery-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .gallery-section-title {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .gallery-hash {
+    color: var(--color-primary);
+  }
+
+  .gallery-section-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-shrink: 0;
+    padding-bottom: 0.35rem;
+  }
+
+  .gallery-section-count {
+    color: var(--text-tertiary);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+  }
+
+  .gallery-scroll-controls {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .gallery-scroll-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), opacity var(--transition-fast);
+  }
+
+  .gallery-scroll-btn:hover:not(:disabled) {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .gallery-scroll-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .gallery-row {
+    display: flex;
+    gap: clamp(0.75rem, 1.2vw, 1.1rem);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.25rem 0 1rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-primary) 60%, transparent) transparent;
+  }
+
+  .gallery-row::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .gallery-row::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-primary) 60%, transparent);
+    border-radius: 9999px;
+  }
+
+  .gallery-row::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .gallery-card {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    height: clamp(190px, 22vw, 320px);
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    cursor: zoom-in;
+    scroll-snap-align: start;
+  }
+
+  .gallery-card img {
+    display: block;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease, filter 0.45s ease;
+  }
+
+  .gallery-card:hover img,
+  .gallery-card:focus-visible img {
+    transform: scale(1.035);
+    filter: brightness(0.9);
+  }
+
+  .gallery-card:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  .gallery-card-hint {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.55);
+    color: #fff;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+  }
+
+  .gallery-card:hover .gallery-card-hint,
+  .gallery-card:focus-visible .gallery-card-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Lightbox */
+  .gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 3vw, 2.5rem);
+  }
+
+  .gallery-lightbox.is-open {
+    display: flex;
+  }
+
+  .gallery-lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.92);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .gallery-lightbox-stage {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0;
+  }
+
+  .gallery-lightbox-stage img {
+    display: block;
+    width: auto;
+    max-width: min(92vw, 1600px);
+    height: auto;
+    max-height: calc(100vh - 9rem);
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 20px 60px rgb(0 0 0 / 0.4);
+  }
+
+  .gallery-lightbox-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    width: 100%;
+    max-width: min(92vw, 1600px);
+    color: rgb(255 255 255 / 0.75);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+  }
+
+  .gallery-lightbox-counter {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .gallery-lightbox-close {
+    position: absolute;
+    top: clamp(1rem, 2.5vw, 2rem);
+    right: clamp(1rem, 2.5vw, 2rem);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.3);
+    color: #fff;
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .gallery-lightbox-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.3);
+    color: #fff;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  }
+
+  .gallery-lightbox-arrow.is-prev {
+    left: clamp(0.75rem, 2vw, 2rem);
+  }
+
+  .gallery-lightbox-arrow.is-next {
+    right: clamp(0.75rem, 2vw, 2rem);
+  }
+
+  .gallery-lightbox-close:hover,
+  .gallery-lightbox-arrow:hover {
+    border-color: var(--color-primary);
+    background: rgb(0 0 0 / 0.65);
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 980px) {
+    .gallery-page {
+      --gallery-pad: clamp(1.25rem, 4vw, 2rem);
+    }
+
+    .gallery-hero {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      padding-top: clamp(1.5rem, 4vw, 2.5rem);
+      padding-right: var(--gallery-pad);
+    }
+
+    .gallery-sidebar {
+      padding-bottom: 0;
+    }
+
+    .gallery-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .gallery-nav-link {
+      padding: 0.55rem 0;
+      font-size: 0.875rem;
+    }
+
+    .gallery-sidebar-bottom {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+      margin-top: 1.5rem;
+      padding-top: 0;
+    }
+
+    .gallery-palette-btn {
+      align-self: auto;
+    }
+
+    .gallery-socials {
+      margin-left: auto;
+    }
+
+    .gallery-hero-media {
+      border-radius: 5px;
+    }
+
+    .gallery-section {
+      margin-top: clamp(3rem, 8vw, 5rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gallery-section-head {
+      align-items: flex-end;
+      gap: 1rem;
+    }
+
+    .gallery-section-title {
+      font-size: 1.15rem;
+    }
+
+    .gallery-section-meta {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .gallery-section-count {
+      font-size: 0.625rem;
+    }
+
+    .gallery-scroll-controls {
+      display: none;
+    }
+
+    .gallery-card {
+      height: 190px;
+      border-radius: 10px;
+    }
+
+    .gallery-row {
+      gap: 0.6rem;
+    }
+
+    .gallery-lightbox {
+      padding: 0.75rem;
+    }
+
+    .gallery-lightbox-stage img {
+      max-height: calc(100vh - 8rem);
+    }
+
+    .gallery-lightbox-arrow {
+      width: 36px;
+      height: 36px;
+    }
+
+    .gallery-lightbox-caption {
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery-card img,
+    .gallery-card-hint {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  let navScrollHandler: (() => void) | null = null;
+  let lightboxOpen = false;
+  let lightboxItems: { full: string; caption: string }[] = [];
+  let lightboxIndex = 0;
+  let lightboxLastFocus: HTMLElement | null = null;
+
+  function syncThemeButtons() {
+    const mode = document.documentElement.getAttribute('data-theme') || 'auto';
+    document.querySelectorAll<HTMLElement>('[data-gallery-theme]').forEach(button => {
+      const active = button.dataset.galleryTheme === mode;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll<HTMLElement>('.theme-option').forEach(button => {
+      button.classList.toggle('active', button.getAttribute('data-theme') === mode);
+    });
+  }
+
+  function applyTheme(mode: string) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const effective = mode === 'auto' ? (prefersDark ? 'dark' : 'light') : mode;
+    localStorage.setItem('theme', mode);
+    document.documentElement.setAttribute('data-theme', mode);
+    document.documentElement.classList.remove('dark', 'light');
+    document.documentElement.classList.add(effective);
+    syncThemeButtons();
+  }
+
+  function updateGalleryNav() {
+    if (!document.body.classList.contains('gallery-mode')) return;
+    document.body.classList.toggle('gallery-nav-visible', window.scrollY > 24);
+  }
+
+  function updateRowControls(row: HTMLElement) {
+    const section = row.closest('.gallery-section');
+    if (!section) return;
+    const prev = section.querySelector<HTMLButtonElement>('[data-gallery-scroll="-1"]');
+    const next = section.querySelector<HTMLButtonElement>('[data-gallery-scroll="1"]');
+    const max = row.scrollWidth - row.clientWidth;
+    if (prev) prev.disabled = row.scrollLeft <= 4;
+    if (next) next.disabled = row.scrollLeft >= max - 4;
+  }
+
+  function initGalleryPage() {
+    const page = document.querySelector('.gallery-page');
+    if (!page) return;
+
+    updateGalleryNav();
+    if (!navScrollHandler) {
+      navScrollHandler = updateGalleryNav;
+      window.addEventListener('scroll', navScrollHandler, { passive: true });
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-gallery-row]').forEach(row => {
+      if (row.dataset.galleryBound === 'true') return;
+      row.dataset.galleryBound = 'true';
+      row.addEventListener('scroll', () => updateRowControls(row), { passive: true });
+      updateRowControls(row);
+    });
+
+    syncThemeButtons();
+  }
+
+  function openLightbox(cards: HTMLElement[], index: number) {
+    const lightbox = document.querySelector<HTMLElement>('#gallery-lightbox');
+    if (!lightbox) return;
+
+    lightboxItems = cards.map(card => ({
+      full: card.dataset.full || '',
+      caption: card.dataset.caption || '',
+    }));
+    lightboxIndex = index;
+    lightboxOpen = true;
+    lightboxLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    updateLightbox();
+    lightbox.querySelector<HTMLButtonElement>('.gallery-lightbox-close')?.focus();
+  }
+
+  function updateLightbox() {
+    const item = lightboxItems[lightboxIndex];
+    if (!item) return;
+    const image = document.querySelector<HTMLImageElement>('#gallery-lightbox-image');
+    const caption = document.querySelector<HTMLElement>('#gallery-lightbox-caption-text');
+    const counter = document.querySelector<HTMLElement>('#gallery-lightbox-counter');
+    if (image) {
+      image.src = item.full;
+      image.alt = item.caption;
+    }
+    if (caption) caption.textContent = item.caption;
+    if (counter) {
+      counter.textContent = `${String(lightboxIndex + 1).padStart(2, '0')} / ${String(lightboxItems.length).padStart(2, '0')}`;
+    }
+    for (const offset of [1, -1]) {
+      const preload = lightboxItems[(lightboxIndex + offset + lightboxItems.length) % lightboxItems.length];
+      if (preload?.full) {
+        const nextImage = new Image();
+        nextImage.src = preload.full;
+      }
+    }
+  }
+
+  function moveLightbox(direction: number) {
+    if (!lightboxOpen || lightboxItems.length === 0) return;
+    lightboxIndex = (lightboxIndex + direction + lightboxItems.length) % lightboxItems.length;
+    updateLightbox();
+  }
+
+  function closeLightbox() {
+    const lightbox = document.querySelector<HTMLElement>('#gallery-lightbox');
+    if (!lightbox) return;
+    const wasOpen = lightboxOpen;
+    lightboxOpen = false;
+    lightboxItems = [];
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    if (wasOpen && lightboxLastFocus && document.contains(lightboxLastFocus)) {
+      lightboxLastFocus.focus();
+    }
+    lightboxLastFocus = null;
+  }
+
+  function cleanupGalleryPage() {
+    if (navScrollHandler) {
+      window.removeEventListener('scroll', navScrollHandler);
+      navScrollHandler = null;
+    }
+    document.body.classList.remove('gallery-nav-visible');
+    if (lightboxOpen) closeLightbox();
+  }
+
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+
+    const themeButton = target.closest('[data-gallery-theme]') as HTMLElement | null;
+    if (themeButton) {
+      event.preventDefault();
+      applyTheme(themeButton.dataset.galleryTheme || 'auto');
+      return;
+    }
+
+    const scrollButton = target.closest('[data-gallery-scroll]') as HTMLElement | null;
+    if (scrollButton) {
+      event.preventDefault();
+      const direction = Number(scrollButton.dataset.galleryScroll);
+      const row = scrollButton.closest('.gallery-section')?.querySelector<HTMLElement>('[data-gallery-row]');
+      if (row) {
+        row.scrollBy({ left: direction * Math.max(280, row.clientWidth * 0.8), behavior: 'smooth' });
+      }
+      return;
+    }
+
+    const card = target.closest('[data-gallery-item]') as HTMLElement | null;
+    if (card) {
+      event.preventDefault();
+      const row = card.closest('[data-gallery-row]');
+      if (!row) return;
+      const cards = [...row.querySelectorAll<HTMLElement>('[data-gallery-item]')];
+      openLightbox(cards, cards.indexOf(card));
+      return;
+    }
+
+    if (target.closest('[data-gallery-close]')) {
+      event.preventDefault();
+      closeLightbox();
+      return;
+    }
+
+    if (target.closest('[data-gallery-prev]')) {
+      event.preventDefault();
+      moveLightbox(-1);
+      return;
+    }
+
+    if (target.closest('[data-gallery-next]')) {
+      event.preventDefault();
+      moveLightbox(1);
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (!lightboxOpen) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeLightbox();
+      return;
+    }
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      moveLightbox(-1);
+      return;
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      moveLightbox(1);
+      return;
+    }
+
+    if (event.key === 'Tab') {
+      const lightbox = document.querySelector<HTMLElement>('#gallery-lightbox');
+      if (!lightbox) return;
+      const focusable = [...lightbox.querySelectorAll<HTMLElement>('button:not([disabled])')];
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  const themeObserver = new MutationObserver(syncThemeButtons);
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+
+  document.addEventListener('astro:page-load', initGalleryPage);
+  document.addEventListener('astro:before-swap', cleanupGalleryPage);
+  initGalleryPage();
+</script>

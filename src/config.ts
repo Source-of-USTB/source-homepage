@@ -20,10 +20,10 @@ export const siteConfig = {
 
   // Navigation links — displayed in capsule nav bar
   nav: [
-    { title: 'Home', href: '/' },
-    { title: 'Blogs', href: '/blogs' },
-    { title: 'Gallery', href: '/gallery' },
+    { title: 'Home', href: '/gallery' },
+    { title: 'About', href: '/' },
     { title: 'Members', href: '/members' },
+    { title: 'Blogs', href: '/blogs' },
   ],
 
   // Social links — leave empty to hide
