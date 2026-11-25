@@ -851,6 +851,17 @@ const socialLinks = [
   function updateGalleryNav() {
     if (!document.body.classList.contains('gallery-mode')) return;
     document.body.classList.toggle('gallery-nav-visible', window.scrollY > 24);
+
+    const hero = document.querySelector<HTMLElement>('.gallery-hero');
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    const fadeDistance = Math.min(280, Math.max(160, window.innerHeight * 0.3));
+    const watermarkProgress = heroBottom >= 0
+      ? 0
+      : Math.min(1, -heroBottom / fadeDistance);
+    document.body.style.setProperty(
+      '--gallery-watermark-progress',
+      watermarkProgress.toFixed(3),
+    );
   }
 
   function updateRowControls(row: HTMLElement) {
@@ -951,6 +962,7 @@ const socialLinks = [
       navScrollHandler = null;
     }
     document.body.classList.remove('gallery-nav-visible');
+    document.body.style.removeProperty('--gallery-watermark-progress');
     if (lightboxOpen) closeLightbox();
   }
 

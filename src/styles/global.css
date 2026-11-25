@@ -89,6 +89,99 @@ html.dark {
 }
 
 /* ===================================
+   Site watermark: club logo line art, palette-aware
+   =================================== */
+
+.site-watermark {
+  --watermark-opacity: 0.4;
+  position: fixed;
+  top: 50%;
+  left: 0;
+  z-index: -1;
+  width: min(33vw, calc(100vh * 0.6716));
+  aspect-ratio: 865 / 1288;
+  overflow: hidden;
+  transform: translateY(-50%);
+  /* Head-to-tail (top-to-bottom) metallic colour gradient. */
+  background: linear-gradient(
+    to bottom,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 14%,
+    color-mix(in srgb, var(--color-primary) 65%, #fff) 22%,
+    var(--color-primary) 30%,
+    var(--color-primary-hover) 44%,
+    var(--color-primary) 58%,
+    var(--color-primary-dark) 70%,
+    var(--color-primary) 82%,
+    color-mix(in srgb, var(--color-primary) 65%, #fff) 90%,
+    var(--color-primary-dark) 100%
+  );
+  background-size: 100% 200%;
+  animation: watermark-flow 5s ease-in-out infinite alternate;
+  opacity: var(--watermark-opacity);
+  mix-blend-mode: multiply;
+  -webkit-mask: url('/images/brand/SourceLogoString_v3.svg') left center / contain no-repeat;
+  mask: url('/images/brand/SourceLogoString_v3.svg') left center / contain no-repeat;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.site-watermark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* A soft horizontal highlight band, swept from head to tail
+     (top to bottom) inside the SVG mask. The parent mask clips it
+     to the logo strokes only. */
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    color-mix(in srgb, var(--color-primary) 35%, #fff) 47%,
+    color-mix(in srgb, var(--color-primary) 35%, #fff) 53%,
+    transparent 60%
+  );
+  opacity: 0.6;
+  transform: translateY(-130%);
+  animation: watermark-metal 5s ease-in-out infinite;
+  will-change: transform;
+  pointer-events: none;
+}
+
+@keyframes watermark-flow {
+  from {
+    background-position: 0% 100%;
+  }
+  to {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes watermark-metal {
+  from {
+    transform: translateY(-130%);
+  }
+  to {
+    transform: translateY(130%);
+  }
+}
+
+html.dark .site-watermark {
+  --watermark-opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+@media (max-width: 768px) {
+  .site-watermark {
+    --watermark-opacity: 0.26;
+    width: 100vw;
+  }
+
+  html.dark .site-watermark {
+    --watermark-opacity: 0.3;
+  }
+}
+
+/* ===================================
    Gallery page: hide the capsule nav at the very top
    =================================== */
 
@@ -113,6 +206,14 @@ body.gallery-mode.gallery-nav-visible .capsule-nav {
   transform: translateX(-50%);
 }
 
+/* Keep the left hero controls clear: reveal the watermark only after the
+   gallery hero has scrolled out of view. */
+body.gallery-mode .site-watermark {
+  /* JS updates --gallery-watermark-progress from 0 to 1 as the hero
+     scrolls out, so the fade follows the scroll instead of snapping. */
+  opacity: calc(var(--watermark-opacity) * var(--gallery-watermark-progress, 0));
+}
+
 /* ===================================
    Base Styles
    =================================== */
@@ -127,13 +228,15 @@ html {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   scroll-behavior: smooth;
   background-color: var(--bg-primary);
+  transition: background-color var(--transition-normal);
 }
 
 body {
-  background-color: var(--bg-primary);
+  /* Let the fixed watermark sit above the html background but behind content. */
+  background-color: transparent;
   color: var(--text-primary);
   line-height: 1.6;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition: color var(--transition-normal);
 }
 
 a {
@@ -313,4 +416,16 @@ tbody tr:hover {
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .site-watermark,
+  .site-watermark::after {
+    animation: none;
+  }
+
+  .site-watermark {
+    transition: none;
+  }
 }
