@@ -1,0 +1,45 @@
+name: Sync member blog data
+
+on:
+  schedule:
+    # Every 6 hours. Planet-Source-of-USTB is the upstream aggregator.
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-planet-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Sync Planet data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run sync:planet
+
+      - name: Commit data changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [ -z "$(git status --porcelain -- src/data/planet public/planet/avatars)" ]; then
+            echo "No member blog data changes"
+            exit 0
+          fi
+
+          git add src/data/planet public/planet/avatars
+          git commit -m "chore(data): sync member blog feeds"
+          git push

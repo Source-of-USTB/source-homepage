@@ -24,6 +24,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "sync:planet": "node scripts/sync-planet.mjs",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
